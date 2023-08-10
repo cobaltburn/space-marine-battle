@@ -22,30 +22,29 @@ const (
 )
 
 const (
-	HEIGHT = 30
-	WIDTH  = 30
-)
+	TermagantRange    = 6
+	TermagantHp       = 5
+	TermagantDMG      = 3
+	TermagantWS       = 4
+	TermagantMovement = 3
 
-const (
-	TermagantRange = 3
-	TermagantHp    = 5
-	TermagantDMG   = 3
-	TermagantWS    = 4
+	LeaperRange    = 2
+	LeaperHp       = 7
+	LeaperDMG      = 4
+	LeaperWS       = 2
+	LeaperMovement = 5
 
-	LeaperRange = 2
-	LeaperHp    = 7
-	LeaperDMG   = 4
-	LeaperWS    = 2
+	TacticalRange    = 12
+	TacticalHp       = 9
+	TacticalDMG      = 5
+	TacticalWS       = 3
+	TacticalMovement = 3
 
-	TacticalRange = 3
-	TacticalHp    = 10
-	TacticalDMG   = 5
-	TacticalWS    = 3
-
-	SniperRange = 6
-	SniperHp    = 8
-	SniperDMG   = 7
-	SniperWS    = 2
+	SniperRange    = 18
+	SniperHp       = 6
+	SniperDMG      = 7
+	SniperWS       = 2
+	SniperMovement = 3
 )
 
 var (
@@ -113,8 +112,8 @@ func (unit Unit) distance(target Unit) float64 {
 
 func (unit Unit) stepOptions(target Unit, units []Unit) []int {
 	spaces := make([][]int, 0)
-	for x := -1; x <= 1; x++ {
-		for y := -1; y <= 1; y++ {
+	for x := -unit.Movement(); x <= unit.Movement(); x++ {
+		for y := -unit.Movement(); y <= unit.Movement(); y++ {
 			spaces = append(spaces, []int{x, y})
 		}
 	}
@@ -170,6 +169,21 @@ func (unit Unit) WeaponSkill() int {
 		return TacticalWS
 	case unit.unit == Sniper:
 		return SniperWS
+	default:
+		panic("invalid unit type")
+	}
+}
+
+func (unit Unit) Movement() int {
+	switch {
+	case unit.unit == Termagant:
+		return TermagantMovement
+	case unit.unit == Leaper:
+		return LeaperMovement
+	case unit.unit == Tactical:
+		return TacticalMovement
+	case unit.unit == Sniper:
+		return SniperMovement
 	default:
 		panic("invalid unit type")
 	}

@@ -25,6 +25,8 @@ const (
 type Game struct {
 	marines  []Unit
 	tyranids []Unit
+	height   int
+	width    int
 	counter  int
 }
 
@@ -56,15 +58,23 @@ func (game *Game) drawBoard(screen *ebiten.Image) {
 		return
 	}
 
-	tileHeight := ScreenHeight / HEIGHT
-	tileWidth := ScreenWidth / WIDTH
+	tileHeight := ScreenHeight / game.height
+	tileWidth := ScreenWidth / game.width
 
-	for y := 0; HEIGHT > y; y++ {
-		for x := 0; WIDTH > x; x++ {
-			xPos := x * tileWidth
-			yPos := y * tileHeight
-			vector.DrawFilledRect(screen, float32(xPos), float32(yPos), float32(tileWidth), float32(tileHeight), game.checkColor(x, y), true)
-		}
+	img := ebiten.NewImage(ScreenWidth, ScreenHeight)
+	img.Fill(color.White)
+	screen.DrawImage(img, nil)
+
+	for _, unit := range game.marines {
+		xPos := unit.x * tileWidth
+		yPos := unit.y * tileHeight
+		vector.DrawFilledRect(screen, float32(xPos), float32(yPos), float32(tileWidth), float32(tileHeight), unit.GetColor(), true)
+	}
+
+	for _, unit := range game.tyranids {
+		xPos := unit.x * tileWidth
+		yPos := unit.y * tileHeight
+		vector.DrawFilledRect(screen, float32(xPos), float32(yPos), float32(tileWidth), float32(tileHeight), unit.GetColor(), true)
 	}
 }
 

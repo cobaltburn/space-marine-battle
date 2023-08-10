@@ -9,10 +9,14 @@ import (
 )
 
 const (
-	TotalAssult = 10
-	TotalSniper = 5
+	HEIGHT = 44
+	WIDTH  = 60
+)
 
-	TotalTyranids   = 30
+const (
+	TotalTatical = 10
+	TotalSniper  = 5
+
 	TotalTermagants = 25
 	TotalLeapers    = 5
 )
@@ -21,7 +25,7 @@ func main() {
 	ebiten.SetWindowSize(ScreenWidth, ScreenHeight)
 	ebiten.SetWindowTitle("space marine battle")
 	marines, tyranids := placeCharacters()
-	if err := ebiten.RunGame(&Game{marines: marines, tyranids: tyranids}); err != nil {
+	if err := ebiten.RunGame(&Game{marines: marines, tyranids: tyranids, height: HEIGHT, width: WIDTH}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -29,14 +33,14 @@ func main() {
 func placeCharacters() ([]Unit, []Unit) {
 	spaceMarines := make([]Unit, 0)
 	points := make([][]int, 0)
-	for len(points) < TotalAssult+TotalSniper {
-		x := rand.Intn(WIDTH) / 4
+	for len(points) < TotalTatical+TotalSniper {
+		x := rand.Intn(WIDTH) / 8
 		y := rand.Intn(HEIGHT)
 		pt := []int{x, y}
 		if !containsPoint(points, pt) {
 			points = append(points, pt)
 			var marine Unit
-			if len(spaceMarines) < TotalAssult {
+			if len(spaceMarines) < TotalTatical {
 				marine = GenerateUnit(Tactical, pt[0], pt[1])
 			} else {
 				marine = GenerateUnit(Sniper, pt[0], pt[1])
@@ -47,7 +51,7 @@ func placeCharacters() ([]Unit, []Unit) {
 	points = points[:0]
 	tyranids := make([]Unit, 0)
 	for len(points) < TotalTermagants+TotalLeapers {
-		x := HEIGHT - (rand.Intn(WIDTH) / 4)
+		x := HEIGHT - (rand.Intn(WIDTH) / 8)
 		y := rand.Intn(HEIGHT)
 		pt := []int{x, y}
 		if !containsPoint(points, pt) {
