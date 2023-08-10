@@ -17,31 +17,35 @@ const (
 const (
 	Termagant unitType = iota
 	Leaper
-	Assult
+	Tactical
 	Sniper
 )
 
 const (
-	HEIGHT = 20
-	WIDTH  = 20
+	HEIGHT = 30
+	WIDTH  = 30
 )
 
 const (
 	TermagantRange = 3
 	TermagantHp    = 5
-	TermagantDMG   = 2
+	TermagantDMG   = 3
+	TermagantWS    = 4
 
 	LeaperRange = 2
 	LeaperHp    = 7
 	LeaperDMG   = 4
+	LeaperWS    = 2
 
-	AssultRange = 3
-	AssultHp    = 10
-	AssultDMG   = 5
+	TacticalRange = 3
+	TacticalHp    = 10
+	TacticalDMG   = 5
+	TacticalWS    = 3
 
 	SniperRange = 6
 	SniperHp    = 8
 	SniperDMG   = 7
+	SniperWS    = 2
 )
 
 var (
@@ -69,7 +73,7 @@ func (unit Unit) GetColor() color.Color {
 		return termColor
 	case u == Leaper:
 		return leaperColor
-	case u == Assult:
+	case u == Tactical:
 		return assultColor
 	case u == Sniper:
 		return sniperColor
@@ -132,8 +136,8 @@ func (unit Unit) AttackRange() float64 {
 		return TermagantRange
 	case unit.unit == Leaper:
 		return LeaperRange
-	case unit.unit == Assult:
-		return AssultRange
+	case unit.unit == Tactical:
+		return TacticalRange
 	case unit.unit == Sniper:
 		return SniperRange
 	default:
@@ -147,8 +151,8 @@ func (unit Unit) Damage() int {
 		return TermagantDMG
 	case unit.unit == Leaper:
 		return LeaperDMG
-	case unit.unit == Assult:
-		return AssultDMG
+	case unit.unit == Tactical:
+		return TacticalDMG
 	case unit.unit == Sniper:
 		return SniperDMG
 	default:
@@ -156,7 +160,26 @@ func (unit Unit) Damage() int {
 	}
 }
 
+func (unit Unit) WeaponSkill() int {
+	switch {
+	case unit.unit == Termagant:
+		return TermagantWS
+	case unit.unit == Leaper:
+		return LeaperWS
+	case unit.unit == Tactical:
+		return TacticalWS
+	case unit.unit == Sniper:
+		return SniperWS
+	default:
+		panic("invalid unit type")
+	}
+}
+
 func (unit Unit) Attack(targets []Unit) {
+	attack := rand.Intn(6) + 1
+	if !(attack >= unit.WeaponSkill()) {
+		return
+	}
 	tar := unit.findTarget(targets)
 	dist := unit.distance(*tar)
 	if dist <= unit.AttackRange() {
@@ -192,13 +215,13 @@ func GenerateUnit(unit unitType, x, y int) Unit {
 			y,
 			LeaperHp,
 		}
-	case unit == Assult:
+	case unit == Tactical:
 		return Unit{
 			SpaceMarine,
 			unit,
 			x,
 			y,
-			AssultHp,
+			TacticalHp,
 		}
 	case unit == Sniper:
 		return Unit{

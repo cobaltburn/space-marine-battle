@@ -9,9 +9,8 @@ import (
 )
 
 const (
-	TotalMarines = 15
-	TotalAssult  = 10
-	TotalSniper  = 5
+	TotalAssult = 10
+	TotalSniper = 5
 
 	TotalTyranids   = 30
 	TotalTermagants = 25
@@ -30,41 +29,37 @@ func main() {
 func placeCharacters() ([]Unit, []Unit) {
 	spaceMarines := make([]Unit, 0)
 	points := make([][]int, 0)
-	for len(points) < TotalMarines {
+	for len(points) < TotalAssult+TotalSniper {
 		x := rand.Intn(WIDTH) / 4
 		y := rand.Intn(HEIGHT)
 		pt := []int{x, y}
 		if !containsPoint(points, pt) {
 			points = append(points, pt)
+			var marine Unit
+			if len(spaceMarines) < TotalAssult {
+				marine = GenerateUnit(Tactical, pt[0], pt[1])
+			} else {
+				marine = GenerateUnit(Sniper, pt[0], pt[1])
+			}
+			spaceMarines = append(spaceMarines, marine)
 		}
-	}
-	for i, pt := range points {
-		var marine Unit
-		if i < TotalAssult {
-			marine = GenerateUnit(Assult, pt[0], pt[1])
-		} else {
-			marine = GenerateUnit(Sniper, pt[0], pt[1])
-		}
-		spaceMarines = append(spaceMarines, marine)
 	}
 	points = points[:0]
-	for len(points) < TotalTyranids {
+	tyranids := make([]Unit, 0)
+	for len(points) < TotalTermagants+TotalLeapers {
 		x := HEIGHT - (rand.Intn(WIDTH) / 4)
 		y := rand.Intn(HEIGHT)
 		pt := []int{x, y}
 		if !containsPoint(points, pt) {
 			points = append(points, pt)
+			var tyranid Unit
+			if len(tyranids) < TotalTermagants {
+				tyranid = GenerateUnit(Termagant, pt[0], pt[1])
+			} else {
+				tyranid = GenerateUnit(Leaper, pt[0], pt[1])
+			}
+			tyranids = append(tyranids, tyranid)
 		}
-	}
-	tyranids := make([]Unit, 0)
-	for i, pt := range points {
-		var tyranid Unit
-		if i < TotalTermagants {
-			tyranid = GenerateUnit(Termagant, pt[0], pt[1])
-		} else {
-			tyranid = GenerateUnit(Leaper, pt[0], pt[1])
-		}
-		tyranids = append(tyranids, tyranid)
 	}
 	return spaceMarines, tyranids
 }

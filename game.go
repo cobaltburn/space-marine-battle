@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	ScreenWidth = 640
+	ScreenWidth = 1080
 	ScreenHeight
 
 	frameOX = 0
